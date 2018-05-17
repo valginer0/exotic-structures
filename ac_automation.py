@@ -3,6 +3,8 @@ A good lecture on the Aho-Corasick Algorithm is here:
 
 http://www.cs.uku.fi/~kilpelai/BSA05/lectures/slides04.pdf
 
+The algorithm is implemented here in Python
+
 """
 
 from collections import Counter, defaultdict
@@ -13,6 +15,7 @@ class Automaton(object):
     An implementation of Aho-Corasick algorithm
 
     """
+
     class Node(object):
         def __init__(self, label):
             self.label = label
@@ -37,25 +40,25 @@ class Automaton(object):
 
     def _add_word(self, word, idx, h):
         n = self.root
-        for j,c in enumerate(word):
+        for j, c in enumerate(word):
             n = n.add_child_if_absent(c)
         n.add_word(word, idx, h)
 
     def _build_fail(self):
         self.root.fail = self.root
         q = []
-        for k,v in self.root.children():
+        for k, v in self.root.children():
             v.fail = self.root
             q.append(v)
 
         while q:
             nxt = []
             for n in q:
-                for k,v in n.children():
+                for k, v in n.children():
                     nxt.append(v)
                     n_fail = n.fail
                     n_fail_ch = n_fail.get_child(k)
-                    while not n_fail_ch: # and n_fail != self.root:
+                    while not n_fail_ch:  # and n_fail != self.root:
                         n_fail = n_fail.fail
                         n_fail_ch = n_fail.get_child(k)
                         if not n_fail_ch and n_fail == self.root:
@@ -69,14 +72,14 @@ class Automaton(object):
                 q = nxt
 
     def build(self, words, h_score):
-        for i,(w,h) in enumerate(zip(words, h_score)):
+        for i, (w, h) in enumerate(zip(words, h_score)):
             self._add_word(w, i, h)
         self._build_fail()
 
     def traverse(self, word, first, last):
         res = Counter()
         n = self.root
-        for i,c in enumerate(word):
+        for i, c in enumerate(word):
             n_ch = n.get_child(c)
             while not n_ch:
                 n = n.fail
@@ -86,62 +89,62 @@ class Automaton(object):
             if n_ch:
                 n = n_ch
                 for word2 in n.output.keys():
-                    for (idx,h) in n.output[word2]:
+                    for (idx, h) in n.output[word2]:
                         if first <= idx <= last:
                             res[word2] += h
         return res
 
 
 if __name__ == '__main__':
+    """
+    Keeping some tests here as examples of the usage.
+    Unit tests are also presented in the tests package.
+    """
+
 
     def test0():
-        words =   ['he', 'she', 'his', 'her', 'hers']
-        h_score = [1,    3,      2,    4,     5]
+        words = ['he', 'she', 'his', 'her', 'hers']
+        h_score = [1, 3, 2, 4, 5]
         ac = Automaton()
         ac.build(words, h_score)
         expected = Counter({'hers': 10, 'she': 9, 'her': 8, 'he': 3, 'his': 2})
-        res = ac.traverse('shershehishers', 0, len('shershehishers')-1)
-        # print(expected)
-        # print(res)
+        res = ac.traverse('shershehishers', 0, len('shershehishers') - 1)
         assert expected == res
         print('test0 passed')
 
+
     def test1():
         words = ['he', 'she', 'his', 'her', 'hers']
-        h_score = [1,    3,      2,    4,     5]
+        h_score = [1, 3, 2, 4, 5]
         ac = Automaton()
-        ac.build(words, h_score)        # we do not want to have substring repeated in the words
+        ac.build(words, h_score)  # we do not want to have substring repeated in the words
         expected = Counter()
-        # expected = []
         res = ac.traverse('xyz', 0, 2)
-        # print(expected)
-        # print(res)
         assert expected == res
         print('test1 passed')
 
+
     def test2():
         words = ['he', 'she', 'his', 'her', 'hers']
-        h_score = [1,    3,      2,    4,     5]
+        h_score = [1, 3, 2, 4, 5]
         ac = Automaton()
         ac.build(words, h_score)
         expected = Counter({'she': 9, 'his': 2})
         res = ac.traverse('shershehishers', 1, 2)
-        # print(expected)
-        # print(res)
         assert expected == res
         print('test2 passed')
 
+
     def test3():
-        words =   ['a', 'b', 'c', 'aa', 'd', 'b']
-        h_score = [ 1,   2,   3,    4,   5,   6]
+        words = ['a', 'b', 'c', 'aa', 'd', 'b']
+        h_score = [1, 2, 3, 4, 5, 6]
         ac = Automaton()
         ac.build(words, h_score)
-        expected = Counter({'c':3, 'b': 8, 'aa': 8, })
+        expected = Counter({'c': 3, 'b': 8, 'aa': 8, })
         res = ac.traverse('caaab', 1, 5)
-        # print(expected)
-        # print(res)
         assert expected == res
         print('test3 passed')
+
 
     test0()
     test1()

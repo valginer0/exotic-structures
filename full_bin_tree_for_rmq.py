@@ -162,10 +162,12 @@ def update(len_a, t, idx_change, change, f=min, ignore=float('inf')):
 
 if __name__ == '__main__':
     """
-    Unit tests go hear for simplicity
+    Keeping some tests here as examples of the usage.
+    Unit tests are also presented in the tests package.
     """
 
 
+    ####################################################################################
     def __prepare_stupid_rmq(a, f=min):
         return [[f(a[i:j]) for i in range(j)] for j in range(1, len(a) + 1)]
 
@@ -174,51 +176,53 @@ if __name__ == '__main__':
         return c[j][i] if i < j else c[i][j] if j < i else c[i][i]
 
 
-    def test1_1():
-        assert [5] == build_helper_tree([5])
-        assert [5] == build_helper_tree([5], f=max, ignore=-float('inf'))
-
-
-    def test1_2():
-        assert [5, 5, 7] == build_helper_tree([5, 7])
-        assert [7, 5, 7] == build_helper_tree([5, 7], f=max, ignore=-float('inf'))
-
-
-    def test1_3():
-        assert [12, 5, 7] == build_helper_tree([5, 7], f=sum, ignore=0)
-
-
-    def test1_4():
-        assert [22, 12, 10, 5, 7, 0, 0] == build_helper_tree([5, 7, 10], f=sum, ignore=0)
-
-
-    def test2_1():
-        a = [5]
-        t = build_helper_tree([5])
-        m = rmq(len(a), t, 0, 0)
-        assert 5 == m
-
-
-    def test2_2():
-        a = [5]
-        t = build_helper_tree([5], f=max, ignore=-float('inf'))
-        m = rmq(len(a), t, 0, 0, f=max, ignore=-float('inf'))
-        assert 5 == m
-
-
-    def test3():
+    def test__prepare_stupid_rmq_1():
         assert ([[5], [3, 3], [3, 3, 7], [3, 3, 4, 4], [3, 3, 4, 4, 8]] ==
                 __prepare_stupid_rmq([5, 3, 7, 4, 8]))
         assert ([[5], [5, 3], [7, 7, 7], [7, 7, 7, 4], [8, 8, 8, 8, 8]] ==
                 __prepare_stupid_rmq([5, 3, 7, 4, 8], f=max))
 
 
-    def test4():
+    def test__stupid_rmq_1():
         a = [5, 3, 7, 4, 8]
         c = __prepare_stupid_rmq(a)
         for j in range(1, len(a) + 1):
             for i in range(j):
                 assert c[j - 1][i] == __stupid_rmq(c, i, j - 1)
+
+
+    ####################################################################################
+
+    def test__build_helper_tree_min_and_max_1():
+        assert [5] == build_helper_tree([5])
+        assert [5] == build_helper_tree([5], f=max, ignore=-float('inf'))
+
+
+    def test__build_helper_tree_min_and_max_2():
+        assert [5, 5, 7] == build_helper_tree([5, 7])
+        assert [7, 5, 7] == build_helper_tree([5, 7], f=max, ignore=-float('inf'))
+
+
+    def test__build_helper_tree_sum_1():
+        assert [12, 5, 7] == build_helper_tree([5, 7], f=sum, ignore=0)
+
+
+    def test__build_helper_tree_sum_2():
+        assert [22, 12, 10, 5, 7, 0, 0] == build_helper_tree([5, 7, 10], f=sum, ignore=0)
+
+
+    def test_range_min_query_1():
+        a = [5]
+        t = build_helper_tree([5])
+        m = rmq(len(a), t, 0, 0)
+        assert 5 == m
+
+
+    def test_range_max_query_1():
+        a = [5]
+        t = build_helper_tree([5], f=max, ignore=-float('inf'))
+        m = rmq(len(a), t, 0, 0, f=max, ignore=-float('inf'))
+        assert 5 == m
 
 
     def test_range_min_query():
@@ -354,15 +358,14 @@ if __name__ == '__main__':
             t3 = update(len_a, t2, idx_change=j, change=-4, f=sum, ignore=0)
             assert t2 == t3
 
-
-    test1_1()
-    test1_2()
-    test1_3()
-    test1_4()
-    test2_1()
-    test2_2()
-    test3()
-    test4()
+    test__build_helper_tree_min_and_max_1()
+    test__build_helper_tree_min_and_max_2()
+    test__build_helper_tree_sum_1()
+    test__build_helper_tree_sum_2()
+    test_range_min_query_1()
+    test_range_max_query_1()
+    test__prepare_stupid_rmq_1()
+    test__stupid_rmq_1()
     test_range_min_query()
     test_range_max_query()
     test_range_sum_query()

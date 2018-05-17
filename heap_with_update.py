@@ -1,3 +1,11 @@
+"""
+The standard Python heapq interface does not contain methods for efficient updates of
+heap elements.   Dijkstra algorithm is an example where such functionality is required.
+This Python implementation of Heap contains method update() and a convenience method
+decrease() to satisfy this additional requirement.
+
+"""
+
 from collections import namedtuple
 
 HeapElement = namedtuple('HeapElement', ['heap_key', 'key', 'data'])
@@ -29,7 +37,7 @@ class UpdatableHeap(object):
     def decrease(self, new_heap_key, key, data):
         idx = self.register.get(key)
         if not idx:
-            pos = self.push(new_heap_key, key, data)
+            pos = self.push(new_heap_key, key, data)  # None in this case
         else:
             self.heap[idx] = HeapElement(new_heap_key, key, data)
             pos = self.bubble_up(idx)  # may work only if new_heap_key is less than the old value of heap_key
@@ -116,7 +124,10 @@ class UpdatableHeap(object):
 
 
 if __name__ == '__main__':
-    from timeit import timeit
+    """
+    Keeping some tests here as examples of the usage.
+    Unit tests are also presented in the tests package.
+    """
 
 
     def test_generic_heap_sort_case():
@@ -130,9 +141,6 @@ if __name__ == '__main__':
         ]
         heapq = UpdatableHeap()
         realised = heapq.heapsort(l2)
-        # print(expected)
-        # print(realised)
-        # print([(x.heap_key, x.key, x.data) for x in heapq.heap])
         assert expected == realised
 
 
@@ -150,8 +158,6 @@ if __name__ == '__main__':
             heapq.push(*x)
         heapq.update(*(20, 3, 3))
         realised = [(x.heap_key, x.key, x.data) for x in heapq.sorted_iterator()]
-        # print(expected)
-        # print(realised)
         assert expected == realised
 
 
@@ -160,13 +166,13 @@ if __name__ == '__main__':
         expected = []
         heapq = UpdatableHeap()
         realised = heapq.heapsort(l2)
-        # print(realised)
         assert expected == realised
 
 
-    # test_empty_heap_sort_case()
-    # test_generic_heap_sort_case()
+    test_empty_heap_sort_case()
+    test_generic_heap_sort_case()
     test_generic_heap_update_case()
 
+    # from timeit import timeit
     # t = timeit('from __main__ import test_generic_heap_update_case; test_generic_heap_update_case()', number=10000)
     # print(t)
