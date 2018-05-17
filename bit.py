@@ -9,6 +9,10 @@ https://cs.stackexchange.com/questions/10538/bit-what-is-the-intuition-behind-a-
 """
 
 
+class BITError(Exception):
+    pass
+
+
 class Bit(object):
     """
     Implementation of Binary Index Tree AKA Fenwick Tree.
@@ -20,6 +24,9 @@ class Bit(object):
         Moved initialisation into init_with_list() method for convenience.
         Don't forget to always use init_with_list() method first.
         """
+        if n < 1:
+            raise BITError('Illegal input length')
+
         self.tree_lst = [0] * (n + 1)
 
     def init_with_list(self, lst):
@@ -30,6 +37,8 @@ class Bit(object):
         :return:
         """
         n = len(lst)
+        if n < 1:
+            raise BITError('Illegal input length')
         self.tree_lst = [0] * (n + 1)
         for j, x in enumerate(lst):
             self.add_at(j, x)
@@ -79,6 +88,12 @@ class Bit(object):
 
 
 if __name__ == "__main__":
+    """
+    Keeping some tests here as examples of the usage.
+    Unit tests are also presented in the tests package.
+    """
+
+
     def test_element():
         lst = [1, 5, 10, 100]
         bit = Bit(len(lst) + 1)
