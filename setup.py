@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='exoticst',
-    version='1.0.0',
+    version='1.0.1',
     packages=['', 'tests'],
     url='https://github.com/valginer0/exotic-structures.git',
     license='MIT',
