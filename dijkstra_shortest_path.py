@@ -2,7 +2,7 @@
 This is a relatively fast implementation of classical Dijkstra short path algorithm:
 it uses the UpdatableHeap implementation of the heap, which updates (decreases) values
 of an internal element in logarithmic time, instead of sorting the whole heap each time
-(e.g., as the implementation from the standard Python library heapq)
+(e.g., as the implementation from the standard Python library heapq does)
 
 """
 from heap_with_update import HeapElement, UpdatableHeap
@@ -10,6 +10,10 @@ from collections import defaultdict
 
 
 class WeightedGraph(object):
+    """
+    For an example of implementation, see make_undirected_weighted_graph() function below
+    """
+
     def __init__(self, lst_of_vertices, adj_list):
         self.v = lst_of_vertices
         self.adj_list = adj_list
@@ -17,6 +21,11 @@ class WeightedGraph(object):
 
 ######################################################################################
 class DijkstraSearch(object):
+    """
+    This implementation of Dijkstra shortest path algorithm used UpdatableHeap, which is
+    asymptotically more efficient than the heapq implementation from the standard Python library
+    """
+
     def __init__(self, g):
         self.g = g
         self.queue = UpdatableHeap()
