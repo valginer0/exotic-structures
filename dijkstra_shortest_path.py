@@ -11,7 +11,7 @@ from collections import defaultdict
 
 class WeightedGraph(object):
     """
-    For an example of implementation, see make_undirected_weighted_graph() function below
+    For example, see make_undirected_weighted_graph() function below
     """
 
     def __init__(self, lst_of_vertices, adj_list):
@@ -27,12 +27,22 @@ class DijkstraSearch(object):
     """
 
     def __init__(self, g):
+        """
+        :param g: WeightedGraph object, where its adj_list *assume* to be a dict, with the vertices as keys and
+                  the dictionaries {vertex, weight) as items, i.e., graph.adj_list[vertex1][vertex2] is
+                  a weight of the edge between vertex1 and vertex2
+        """
         self.g = g
         self.queue = UpdatableHeap()
         self.prev = set()
         self.vds = {}
 
     def init_q(self, s):
+        """
+        The method is *not used*, it is optimized away in the find_shortest_paths().
+        It is *left here only to illustrate* the classical description of the preparation step in Dijkstra algorithm.
+        :param s: The source vertex
+        """
         for v in self.g.v:
             if v != s:
                 vd = HeapElement(heap_key=float('inf'), key=v, data=None)
@@ -42,27 +52,51 @@ class DijkstraSearch(object):
                 self.queue.push(*vd)
             self.vds[vd.key] = vd
 
-    def find_shortest_paths(self, s):
+    def shortest_paths(self, s):
+        """
+        Calculate the shortest distances from the source vertex to the other vertices reachable from s
+        :param s:   the source node
+        :return:    a dictionary with vertices as the keys and the correspondent distances from the source s as values
+                    the dictionary also contains s as a key with 0 as the shortest distance from s to s
+        """
         vd = HeapElement(heap_key=0, key=s, data=None)
         self.queue.push(*vd)
         self.vds[vd.key] = vd
-
         while len(self.queue):
             current = self.queue.pop()
             self.prev.add(current.key)
             for (u, weight) in self.g.adj_list[current.key].items():
-                if (u not in self.prev):
+                if u not in self.prev:
                     if ((not self.vds.get(u)) or
                             (self.vds.get(u) and (current.heap_key + weight < self.vds[u].heap_key))):
                         new_heap_key = current.heap_key + weight
                         self.vds[u] = HeapElement(heap_key=new_heap_key, key=u, data=None)
-                        self.queue.decrease(*self.vds[u])
+                        self.queue.decrease(*self.vds[u])  # here we know that new weight is less than previous one
+        return {vertex: heap_el.heap_key for (vertex, heap_el) in self.vds.items()}
+
+    def find_shortest_paths(self, s):
+        """
+        Calculate a list of N-1 space separated integers denoting the shortest distance of N-1 vertices other than S
+        from starting position S in increasing order of their labels. For unreachable vertices, use -1.
+
+        :param s:  the source node
+        :return:   a list of N-1 integers denoting the shortest distance of N-1 vertices other than S from
+                   starting position S in increasing order of their labels. For unreachable vertices, use -1.
+        """
+        self.shortest_paths(s)
 
         sorted_vertices = sorted(self.vds.keys())
         sorted_weights = [self.vds[v].heap_key if v in sorted_vertices else '-1' for v in self.g.v if v != s]
         return sorted_weights
 
     def str_of_sorted_shortest_paths(self, s):
+        """
+        Output a string consisting N-1 space-separated integers denoting the shortest distance of N-1 vertices
+        other than S from starting position S in increasing order of their labels. For unreachable vertices use -1.
+        :param s:  the source node
+        :return:   a string consisting N-1 space-separated integers denoting the shortest distance of N-1 vertices other
+                   than S from starting position S in increasing order of their labels. For unreachable vertices use -1.
+        """
         sws = self.find_shortest_paths(s)
         return ' '.join([str(w) if w != float('inf') else '-1' for w in sws])
 
@@ -75,8 +109,11 @@ def make_undirected_weighted_graph(edges):
     also if there are two edge with different weights, only the one with the smaller weights
     would be left in the output.  This wouldn't change the dijkstra result
 
-    :param edges: an iterable containing triples node1,node2,weight;
-    :return: adjacency list of the resulting graph
+    :param edges: an iterable containing triples vertex1,vertex2,weight;
+    :return: adjacency list of the resulting WeightedGraph object,
+             where its adj_list being a dict, with the vertices as keys and
+             the dictionaries {vertex, weight) as items, i.e.,
+             graph.adj_list[vertex1][vertex2] is a weight of the edge between vertex1 and vertex2
     """
     adj_list = defaultdict(dict)
     for edge in edges:
