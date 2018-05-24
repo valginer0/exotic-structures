@@ -12,9 +12,9 @@ HeapElement = namedtuple('HeapElement', ['heap_key', 'key', 'data'])
 
 class UpdatableHeap(object):
     """
-    For a clarifying example, when using the object of type UpdatableHeap in dijkstra_shortest_path module, the data
-    is not used, while the members 'heap_key' and 'key' of HeapElement are set to the weight and end vertex
-    of a graph edge respectively.
+    For a clarifying example, when using the object of type UpdatableHeap in dijkstra_shortest_path module,
+    the members 'heap_key' and 'key' of HeapElement are set to the weight and end vertex of a graph edge respectively,
+    while the data is not used.
     Invariants: self.heap satisfies the heap invariant condition at the beginning and at the end of the methods.
     """
 

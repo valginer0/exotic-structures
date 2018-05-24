@@ -5,7 +5,7 @@ Building a full binary tree and using it for Range Minimum Queries, Range Maximu
 The construction takes O(n) time with O(n) an additional space for the array with the tree;
 The update of the range query tree in O(log(n)) time with O(1) additional space (works for max/min as well as for sum)
 
-Here the Range Queries takes O(log(n)) time, which is not optimal but often good enough, while the
+Here the Range Queries take O(log(n)) time, which is not optimal but often good enough, while the
 known (at least to me) structure that gives O(1) time is much more complicated than this one.
 
 The full bin tree we are constructing here is kept in an array (a Python list) in a similar way to the heap structure.
@@ -56,7 +56,7 @@ ign = (0, float('inf'))
 t = build_helper_tree(b, f=f, ignore=ign)
 rmq(len(a), t, i, j, f=f, ignore=ign)[0]    # the function returns tuple in the form (index, min_value)
 
-To find the index of the max element in the range, replace the ign and f with the folowing:
+To find the index of the max element in the range, replace the ign and f with the following:
 def f(lst):
     i, mx = lst[0]
     for j, x in lst:
@@ -76,7 +76,7 @@ def build_helper_tree(a, f=min, ignore=float('inf')):
     """
     :param a: the original array (list) the full binary RMQ tree to be constructed for
     :param f: min or max (or "similar") function
-    :param i  ignore:  e.g., it is float('inf') if f==min else -float('inf') if f==max else 0 #if f==sum
+    :param ignore:  e.g., it is float('inf') if f==min else -float('inf') if f==max else 0 #if f==sum
     :return:  the full binary tree to be used for Rage Queriess (RQ) of a
     """
 
@@ -88,11 +88,8 @@ def build_helper_tree(a, f=min, ignore=float('inf')):
         else:
             mid = start + (end - start) // 2
             shift = idx * 2
-            # t[idx] = f(_bld(start, mid, t, idx=(shift + 1)),
-            #            _bld(mid + 1, end, t, idx=(shift + 2)))
-            left = _bld(start, mid, t, idx=(shift + 1))
-            right = _bld(mid + 1, end, t, idx=(shift + 2))
-            t[idx] = f([left, right])
+            t[idx] = f([_bld(start, mid, t, idx=(shift + 1)),
+                       _bld(mid + 1, end, t, idx=(shift + 2))])
         return t[idx]
 
     n = len(a)

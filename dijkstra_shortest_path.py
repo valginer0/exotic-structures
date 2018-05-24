@@ -1,10 +1,13 @@
 """
+**Assume** there are no negative weights in the graph. It can be either directed or undirected.
+
 This is a relatively fast implementation of classical Dijkstra short path algorithm:
 it uses the UpdatableHeap implementation of the heap, which updates (decreases) values
 of an internal element in logarithmic time, instead of sorting the whole heap each time
 (e.g., as the implementation from the standard Python library heapq does)
-
+The time complexity is O((E + V)log(V) where E and V are the numbers of edges and vertices respectively.
 """
+
 from heap_with_update import HeapElement, UpdatableHeap
 from collections import defaultdict
 
@@ -59,12 +62,15 @@ class DijkstraSearch(object):
         :return:    a dictionary with vertices as the keys and the correspondent distances from the source s as values
                     the dictionary also contains s as a key with 0 as the shortest distance from s to s
         """
+        path = []
         vd = HeapElement(heap_key=0, key=s, data=None)
         self.queue.push(*vd)
         self.vds[vd.key] = vd
         while len(self.queue):
-            current = self.queue.pop()
-            self.prev.add(current.key)
+            current = self.queue.pop()  # the next element on the shortest path from the source
+            if current.key not in self.prev:
+                path.append(current.key)
+                self.prev.add(current.key)
             for (u, weight) in self.g.adj_list[current.key].items():
                 if u not in self.prev:
                     if ((not self.vds.get(u)) or
@@ -72,7 +78,7 @@ class DijkstraSearch(object):
                         new_heap_key = current.heap_key + weight
                         self.vds[u] = HeapElement(heap_key=new_heap_key, key=u, data=None)
                         self.queue.decrease(*self.vds[u])  # here we know that new weight is less than previous one
-        return {vertex: heap_el.heap_key for (vertex, heap_el) in self.vds.items()}
+        return path, {vertex: heap_el.heap_key for (vertex, heap_el) in self.vds.items()}
 
     def find_shortest_paths(self, s):
         """

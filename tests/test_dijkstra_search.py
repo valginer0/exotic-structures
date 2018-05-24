@@ -11,13 +11,15 @@ class TestDijkstraSearch(TestCase):
                         3 1 3
                         4 3 12
         """
-        expected = {1: 0, 2: 24, 3: 3, 4: 15}
+        expected_dict_of_weights = {1: 0, 2: 24, 3: 3, 4: 15}
+        expected_path = [1, 3, 4, 2]
         edges = [[1, 2, 24], [1, 4, 20], [3, 1, 3], [4, 3, 12]]
         s = 1
         g = make_undirected_weighted_graph(edges)
         dijkstra_search = DijkstraSearch(g)
-        dict_of_weights = dijkstra_search.shortest_paths(s)
-        self.assertEqual(expected, dict_of_weights)
+        path, dict_of_weights = dijkstra_search.shortest_paths(s)
+        self.assertEqual(expected_dict_of_weights, dict_of_weights)
+        self.assertEqual(expected_path, path)
 
     def test_find_shortest_paths(self):
         """
