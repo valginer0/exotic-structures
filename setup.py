@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='exoticst',
-    version='1.3.0',
+    version='1.3.1',
     author='Val Giner',
     author_email='valginer0@gmail.com',
     description='Data structures, either not present in standard Python libs or are asymptotically more efficient',
