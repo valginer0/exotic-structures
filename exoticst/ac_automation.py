@@ -1,10 +1,15 @@
 """
-A good lecture on the Aho-Corasick Algorithm is here:
+This implementation of slightly modified Aho-Corasick algorithm takes a list of pattern strings and a list of scores
+for each pattern and efficiently builds a slightly modified Aho-Corasick structure that for a given string,
+calculates the cumulative scores of each pattern substring in the string, i.e, the number of the occurrences of
+of each pattern multiplied by the given scores of the pattern.  The pattern can be repeated with the different scores
+in the pattern/scores lists.  All the occurrences of a pattern would be accounted for.
+E.g., the pattern "aa" would be counted twice in "aaa".
 
-http://www.cs.uku.fi/~kilpelai/BSA05/lectures/slides04.pdf
+Please see the tests for the detailed examples of the calculation requirements and the outputs.
 
-The algorithm is implemented here in Python
-
+A good lecture on the Aho-Corasick Algorithm is, for example, here:
+https://web.stanford.edu/class/cs166/lectures/02/Small02.pdf
 """
 
 from collections import Counter, defaultdict
@@ -12,7 +17,13 @@ from collections import Counter, defaultdict
 
 class Automaton(object):
     """
-    An implementation of Aho-Corasick algorithm
+    An implementation of a slightly modified Aho-Corasick algorithm.
+    This implementation takes a list of pattern strings and a list of scores for each pattern and efficiently builds
+    a slightly modified Aho-Corasick structure that for a given string, calculates the cumulative scores of
+    each pattern substring in the string, i.e, the number of the occurrences of each pattern multiplied by the
+    given scores of the pattern.  The pattern can be repeated with the different scores in the pattern/scores lists.
+    All the occurrences of a pattern would be accounted for.  E.g., the pattern "aa" would be counted twice in "aaa".
+    Please see the tests for the detailed examples of the calculation requirements and the outputs.
 
     """
 
@@ -72,11 +83,28 @@ class Automaton(object):
                 q = nxt
 
     def build(self, words, h_score):
+        """
+
+        :param  words:   list of text patterns
+        :param  h_score: list of numbers - the scores for the patterns
+        :return:  build an amended Aho-Corasick structure, return None
+        """
         for i, (w, h) in enumerate(zip(words, h_score)):
             self._add_word(w, i, h)
         self._build_fail()
 
     def traverse(self, word, first, last):
+        """
+
+        :param word:    the text string where to look for the
+        :param first:   the fist index in the lists of the patterns and scores
+        :param last:    the last index in the lists of the patterns and scores
+        :return:        a Counter (dict) with cumulative scores of each patterns
+                        of the sublist of patterns between first and last indexes included
+                        calculated based on the sublist of the scores between first and last indexes included
+                        A pattern string assigned multiple scores would be assigned the sum of the scores.
+                        Please see the tests to illustrate the output.
+        """
         res = Counter()
         n = self.root
         for i, c in enumerate(word):

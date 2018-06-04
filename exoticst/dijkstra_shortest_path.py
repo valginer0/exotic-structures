@@ -8,7 +8,7 @@ of an internal element in logarithmic time, instead of sorting the whole heap ea
 The time complexity is O((E + V)log(V) where E and V are the numbers of edges and vertices respectively.
 """
 
-from heap_with_update import HeapElement, UpdatableHeap
+from exoticst.heap_with_update import HeapElement, UpdatableHeap
 from collections import defaultdict
 
 
