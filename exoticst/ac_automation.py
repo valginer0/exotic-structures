@@ -1,4 +1,13 @@
 """
+Acho-Corasick algorithm yields the best possible time complexity for the solution to the multi-string search problem
+in the case when a fixed set of patterns and (many) variable-length string(s) is (are given).
+The one-time construction of data structure by the set of patterns takes O(n) time, when n is the sum of all the
+lengths of the pattern strings.  After that the search of all the patterns in a given string takes O(m + z) where
+m is the length of the string and z is the number of the matches reported by the algorithm.
+
+Some important applications of the algorithm are described here:
+http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.310.6746&rep=rep1&type=pdf
+
 This implementation of slightly modified Aho-Corasick algorithm takes a list of pattern strings and a list of scores
 for each pattern and efficiently builds a slightly modified Aho-Corasick structure that for a given string,
 calculates the cumulative scores of each pattern substring in the string, i.e, the number of the occurrences of
@@ -10,6 +19,7 @@ Please see the tests for the detailed examples of the calculation requirements a
 
 A good lecture on the Aho-Corasick Algorithm is, for example, here:
 https://web.stanford.edu/class/cs166/lectures/02/Small02.pdf
+
 """
 
 from collections import Counter, defaultdict
